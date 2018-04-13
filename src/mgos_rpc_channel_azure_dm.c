@@ -38,7 +38,7 @@ static void mgos_rpc_channel_azure_dm_ch_connect(struct mg_rpc_channel *ch) {
 }
 
 static void mgos_rpc_channel_azure_dm_ch_close(struct mg_rpc_channel *ch) {
-  mgos_event_remove_group_handler(MGOS_AZURE_EVENT_BASE, rpc_azure_dm_ev, ch);
+  mgos_event_remove_group_handler(MGOS_AZURE_EV_BASE, rpc_azure_dm_ev, ch);
 }
 
 static void mgos_rpc_channel_azure_dm_ch_destroy(struct mg_rpc_channel *ch) {
@@ -112,10 +112,10 @@ out:
 static void rpc_azure_dm_ev(int ev, void *ev_data, void *userdata) {
   struct mg_rpc_channel *ch = (struct mg_rpc_channel *) userdata;
   switch (ev) {
-    case MGOS_AZURE_EVENT_CONNECT:
+    case MGOS_AZURE_EV_CONNECT:
       ch->ev_handler(ch, MG_RPC_CHANNEL_OPEN, NULL);
       break;
-    case MGOS_AZURE_EVENT_DM: {
+    case MGOS_AZURE_EV_DM: {
       struct mgos_azure_dm_arg *dm = (struct mgos_azure_dm_arg *) ev_data;
       struct mg_rpc_frame frame = {
           .version = 2,
@@ -127,7 +127,7 @@ static void rpc_azure_dm_ev(int ev, void *ev_data, void *userdata) {
       ch->ev_handler(ch, MG_RPC_CHANNEL_FRAME_RECD_PARSED, &frame);
       break;
     }
-    case MGOS_AZURE_EVENT_CLOSE:
+    case MGOS_AZURE_EV_CLOSE:
       ch->ev_handler(ch, MG_RPC_CHANNEL_CLOSED, NULL);
       break;
   }
@@ -155,6 +155,5 @@ bool mgos_rpc_azure_init(void) {
   struct mg_rpc_channel *ch = mgos_rpc_channel_azure_dm();
   mg_rpc_add_channel(rpc, mg_mk_str(AZURE_DM_ID), ch);
   ch->ch_connect(ch);
-  return mgos_event_add_group_handler(MGOS_AZURE_EVENT_BASE, rpc_azure_dm_ev,
-                                      ch);
+  return mgos_event_add_group_handler(MGOS_AZURE_EV_BASE, rpc_azure_dm_ev, ch);
 }
