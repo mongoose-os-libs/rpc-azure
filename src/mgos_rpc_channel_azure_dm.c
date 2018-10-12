@@ -79,21 +79,23 @@ static void sent_cb(void *arg) {
 static bool mgos_rpc_channel_azure_dm_send_frame(struct mg_rpc_channel *ch,
                                                  const struct mg_str f) {
   bool res = false;
-  int64_t id = 0;
+  struct json_token idt = JSON_INVALID_TOKEN;
   struct json_token mt = JSON_INVALID_TOKEN;
   struct json_token rt = JSON_INVALID_TOKEN;
   struct json_token et = JSON_INVALID_TOKEN;
+  struct mg_str id;
 
-  json_scanf(f.p, f.len, "{id: %lld, method: %T, result: %T, error: %T}", &id,
+  json_scanf(f.p, f.len, "{id: %T, method: %T, result: %T, error: %T}", &idt,
              &mt, &rt, &et);
   if (mt.ptr != NULL) {
     LOG(LL_ERROR, ("AzureDM channel does not accept requests"));
     goto out;
   }
-  if (id == 0) {
+  if (idt.len == 0) {
     LOG(LL_ERROR, ("AzureDM response is missing ID"));
     goto out;
   }
+  id = mg_mk_str_n(idt.ptr, idt.len);
   if (et.ptr == NULL) {
     struct mg_str resp = mg_mk_str_n(rt.ptr, rt.len);
     res = mgos_azure_dm_response(id, 0, &resp);
