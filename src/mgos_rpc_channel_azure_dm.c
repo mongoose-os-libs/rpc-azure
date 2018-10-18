@@ -21,6 +21,7 @@
 #include "mg_rpc_channel.h"
 
 #include "common/cs_dbg.h"
+#include "common/str_util.h"
 
 #include "frozen.h"
 
