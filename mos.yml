@@ -8,9 +8,9 @@ sources:
 
 config_schema:
   - ["rpc.azure", "o", {title: "RPC over Azure settings"}]
-  - ["rpc.enable_dm", "b", true, {title: "Enable RPC over Azure Direct Method calls"}]
+  - ["rpc.azure.enable_dm", "b", true, {title: "Enable RPC over Azure Direct Method calls"}]
   # TODO(rojer)
-  # - ["rpc.enable_cm", "b", true, {title: "Enable RPC over Azure Cloud Messageing"}]
+  # - ["rpc.azure.enable_cm", "b", true, {title: "Enable RPC over Azure Cloud Messageing"}]
 
 libs:
   - origin: https://github.com/mongoose-os-libs/azure

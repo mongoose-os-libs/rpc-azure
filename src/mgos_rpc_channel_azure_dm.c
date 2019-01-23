@@ -89,11 +89,11 @@ static bool mgos_rpc_channel_azure_dm_send_frame(struct mg_rpc_channel *ch,
   json_scanf(f.p, f.len, "{id: %T, method: %T, result: %T, error: %T}", &idt,
              &mt, &rt, &et);
   if (mt.ptr != NULL) {
-    LOG(LL_ERROR, ("AzureDM channel does not accept requests"));
+    LOG(LL_ERROR, ("%s channel does not accept requests", "AzureDM"));
     goto out;
   }
   if (idt.len == 0) {
-    LOG(LL_ERROR, ("AzureDM response is missing ID"));
+    LOG(LL_ERROR, ("%s response is missing ID", "AzureDM"));
     goto out;
   }
   id = mg_mk_str_n(idt.ptr, idt.len);
@@ -155,6 +155,7 @@ bool mgos_rpc_azure_init(void) {
   if (rpc == NULL) return true;
   if (!mgos_sys_config_get_azure_enable()) return true;
   if (!mgos_sys_config_get_azure_enable_dm()) return true;
+  if (!mgos_sys_config_get_rpc_azure_enable_dm()) return true;
   struct mg_rpc_channel *ch = mgos_rpc_channel_azure_dm();
   mg_rpc_add_channel(rpc, mg_mk_str(AZURE_DM_ID), ch);
   ch->ch_connect(ch);
